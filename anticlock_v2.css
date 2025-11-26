@@ -1,0 +1,147 @@
+/* 全体の設定 */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #fff;
+    overflow: hidden;
+    font-family: sans-serif;
+}
+
+/* 時計のコンテナ */
+.clock-container {
+    width: 90vmin;
+    height: 90vmin;
+    position: relative;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+    z-index: 1;
+}
+
+/* 文字盤 */
+.dial-image {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    object-fit: contain;
+    z-index: 5;
+}
+
+/* 針の共通スタイル */
+.hand {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform-origin: 50% 50%;
+    transform: translate(-50%, -50%);
+    transition: transform 0.05s linear;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+/* 各針のサイズ */
+.minute-hand { width: 100vmin; height: 100vmin; z-index: 20; }
+.second-hand { width: 100vmin; height: 100vmin; z-index: 30; }
+
+/* 短針 (操作可能) */
+.hour-hand {
+    width: 80vmin;
+    height: 80vmin;
+    z-index: 40;
+    cursor: grab;
+    pointer-events: auto;
+}
+.hour-hand:active { cursor: grabbing; }
+
+/* 中心点のスタイル(.center-dot)は削除しました */
+
+/* 隠しトリガー */
+#secret-trigger {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 120px;
+    height: 120px;
+    z-index: 9999;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+/* --- コントロールパネル --- */
+.controls {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 200px;
+    
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.controls.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.panel-title { font-size: 14px; font-weight: bold; color: #666; margin-bottom: 5px; }
+.adjust-group, .btn-group { display: flex; gap: 10px; width: 100%; }
+
+.controls button {
+    flex: 1;
+    padding: 12px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+}
+.controls button:active { transform: scale(0.96); }
+.adjust-group button { background-color: #555; }
+.controls button.reset { background-color: #d9534f; margin-top: 5px; }
+
+/* ... (既存のコードはそのまま) ... */
+
+/* --- コントロールパネル内の修正 --- */
+
+.panel-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: #666;
+    margin-bottom: 0px; /* 少し詰める */
+}
+
+/* ▼▼▼ 追加：時間表示のスタイル ▼▼▼ */
+.time-display {
+    font-size: 32px;
+    font-weight: bold;
+    color: #333;
+    font-family: monospace; /* 等幅フォントで数字のブレを防ぐ */
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+}
+
+/* 他のボタンスタイルなどはそのまま */
+.controls {
+    /* ... */
+    gap: 10px;
+    /* ... */
+}
+/* ... */
