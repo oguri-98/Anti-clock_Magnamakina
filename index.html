@@ -1,23 +1,93 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<title>Analog Clock</title>
-<link rel="stylesheet" href="styles.css">
-<script src='index.js'></script>
-</head>
-<body>
-<div class="container">
-  <h1>Anti clock</h1>
-  <div class="edge-clock">
-    <span class="clock-hour"></span>
-    <span class="clock-min"></span>
-    <span class="clock-sec"></span>
-    <span class="clock-12">12</span>
-    <span class="clock-3">3</span>
-    <span class="clock-6">6</span>
-    <span class="clock-9">9</span>
-  </div>
-</div>
-</body>
-</html>
+<canvas id="clock" style="width:200px;height:200px;"></canvas>
+
+<script>
+function TAnalogClock(clockCanvas){
+  this.can=clockCanvas;
+  this.size=200;
+  this.can.setAttribute("width",this.size+"px");
+  this.can.setAttribute("height",this.size+"px");
+  this.ctx=this.can.getContext("2d", {willReadFrequently:true});
+  this.ctx.scale(1,1);
+  this.ctx.lineCap='round';
+  this.draw=function(){
+    //現在時分秒の取得
+    let nowTime=new Date();
+    let hour=nowTime.getHours();
+    let minute=nowTime.getMinutes();
+    let second=nowTime.getSeconds()+nowTime.getMilliseconds()/1000;
+    //キャンバスのクリア
+    this.ctx.clearRect(0,0,this.size,this.size);
+    let r=this.size/2;
+    //円の描画
+    this.ctx.beginPath();
+    this.ctx.strokeStyle="rgb(0,0,0)";
+    this.ctx.lineWidth=r/20;
+    this.ctx.arc(r,r,r*0.9,0,Math.PI*2,false);
+    this.ctx.stroke();
+
+    //5分毎の目盛りの描画
+    for(i=0;i<60;i+=5){
+      this.ctx.beginPath();
+      this.ctx.strokeStyle="rgb(0,0,0)";
+      this.ctx.lineWidth=r/24;
+      this.ctx.moveTo(r+Math.cos(i/30*Math.PI)*r*0.90,r+Math.sin(i/30*Math.PI)*r*0.90);
+      this.ctx.lineTo(r+Math.cos(i/30*Math.PI)*r*0.85,r+Math.sin(i/30*Math.PI)*r*0.85);
+      this.ctx.stroke();
+    }
+
+    //フォント(塗りつぶし)の色を設定（赤）
+    this.ctx.fillStyle="rgb(255,0,0)";
+    //文字フォントを設定
+    this.ctx.font='normal '+r/6+'px Verdana,Roboto,"Droid Sans","游ゴシック",YuGothic,"メイリオ",Meiryo,'+
+             '"ヒラギノ角ゴ ProN W3","Hiragino Kaku Gothic ProN","ＭＳ Ｐゴシック",sans-serif';
+    this.ctx.textBaseline="middle";
+    this.ctx.textAlign="center";
+    for(i=0;i<4;i++){
+      //座標変換
+      this.ctx.translate(
+        r+Math.cos(0.5*i*Math.PI)*r*0.76, r+Math.sin(0.5*i*Math.PI)*r*0.76
+      );
+      //文字のパスの塗りつぶし
+      this.ctx.fillText((i+1)*3, 0,0);
+      //座標変換をリセット
+      this.ctx.resetTransform();
+    }
+
+    //短針
+    this.ctx.beginPath();
+    this.ctx.strokeStyle="rgb(0,0,0)";
+    this.ctx.lineWidth=r/8;
+    this.ctx.moveTo(r,r);
+    this.ctx.lineTo(
+      r+Math.cos((hour+minute/60)/6*Math.PI-Math.PI/2)*r*0.50,
+      r+Math.sin((hour+minute/60)/6*Math.PI-Math.PI/2)*r*0.50
+    );
+    this.ctx.stroke();
+    //長針
+    this.ctx.beginPath();
+    this.ctx.strokeStyle="rgb(80,80,80)";
+    this.ctx.lineWidth=r/12;
+    this.ctx.moveTo(r,r);
+    this.ctx.lineTo(
+      r+Math.cos((minute+second/60)/30*Math.PI-Math.PI/2)*r*0.65,
+      r+Math.sin((minute+second/60)/30*Math.PI-Math.PI/2)*r*0.65
+    );
+    this.ctx.stroke();
+    //秒針
+    this.ctx.beginPath();
+    this.ctx.strokeStyle="rgb(140,140,140)";
+    this.ctx.lineWidth=r/20;
+    this.ctx.moveTo(r,r);
+    this.ctx.lineTo(
+      r+Math.cos(second/30*Math.PI-Math.PI/2)*r*0.75,
+      r+Math.sin(second/30*Math.PI-Math.PI/2)*r*0.75
+    );
+    this.ctx.stroke();
+  }
+  setInterval(this.draw.bind(this),50);
+}
+window.addEventListener("DOMContentLoaded",function(){
+  //コンストラクタにアナログ時計を描画するキャンバスを指定する
+  AnalogClock=new TAnalogClock(document.querySelector("#clock"));
+});
+</script>
