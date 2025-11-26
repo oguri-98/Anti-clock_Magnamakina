@@ -31,9 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 指定した時間から角度を計算してセット
     function setTime(h, m, s) {
-        h = parseInt(h) || 0;
-        m = parseInt(m) || 0;
-        s = parseInt(s) || 0;
+        h = -parseInt(h) || 0;
+        m = -parseInt(m) || 0;
+        s = -parseInt(s) || 0;
 
         // 角度計算 (通常の時計回りとして計算し、アニメーションで引いていく)
         secondAngle = s * 6;
