@@ -45,12 +45,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 画面の針を描画更新
     function updateHands() {
-        secondHand.style.transform = `${CENTRAL_TRANSFORM} rotate(${secondAngle}deg)`;
-        minuteHand.style.transform = `${CENTRAL_TRANSFORM} rotate(${minuteAngle}deg)`;
+        secondHand.style.transform = `${CENTRAL_TRANSFORM} scale(2) rotate(${secondAngle}deg)`;
+        minuteHand.style.transform = `${CENTRAL_TRANSFORM} scale(2) rotate(${minuteAngle}deg)`;
         
         // 短針はドラッグ中でなければ更新
         if (!isDragging) {
-            hourHand.style.transform = `${CENTRAL_TRANSFORM} rotate(${hourAngle}deg)`;
+            hourHand.style.transform = `${CENTRAL_TRANSFORM} scale(2) rotate(${hourAngle}deg)`;
         }
     }
 
