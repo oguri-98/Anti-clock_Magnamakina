@@ -1,0 +1,124 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+    font-family: Arial, sans-serif;
+    flex-direction: column;
+}
+
+.clock-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.clock {
+    position: relative;
+    width: 300px; /* タブレットに合わせてサイズ調整可能 */
+    height: 300px;
+    border: 10px solid #333;
+    border-radius: 50%;
+    background-color: #fff;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    margin-bottom: 30px;
+}
+
+/* 文字盤の数字の位置調整 */
+.number {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #555;
+}
+
+.number1 { transform: rotate(30deg) translate(0, -135px) rotate(-30deg); }
+.number2 { transform: rotate(60deg) translate(0, -135px) rotate(-60deg); }
+.number3 { transform: rotate(90deg) translate(0, -135px) rotate(-90deg); }
+.number4 { transform: rotate(120deg) translate(0, -135px) rotate(-120deg); }
+.number5 { transform: rotate(150deg) translate(0, -135px) rotate(-150deg); }
+.number6 { transform: rotate(180deg) translate(0, -135px) rotate(-180deg); }
+.number7 { transform: rotate(210deg) translate(0, -135px) rotate(-210deg); }
+.number8 { transform: rotate(240deg) translate(0, -135px) rotate(-240deg); }
+.number9 { transform: rotate(270deg) translate(0, -135px) rotate(-270deg); }
+.number10 { transform: rotate(300deg) translate(0, -135px) rotate(-300deg); }
+.number11 { transform: rotate(330deg) translate(0, -135px) rotate(-330deg); }
+.number12 { transform: rotate(0deg) translate(0, -135px) rotate(0deg); }
+
+
+/* 針の共通スタイル */
+.hand {
+    position: absolute;
+    left: 50%;
+    transform-origin: 0 100%; /* 回転の中心を針の根元（時計の中心）に設定 */
+    top: 50%;
+    margin-left: -2px; /* 針の太さの半分 */
+    background-color: black;
+    transition: transform 0.1s cubic-bezier(0.4, 2.3, 0.6, 1.0); /* スムーズな動きと、特に秒針の跳ね返り効果 */
+}
+
+/* 短針 */
+.hour-hand {
+    width: 6px;
+    height: 75px;
+    background-color: #333;
+    z-index: 3;
+    margin-left: -3px;
+}
+
+/* 長針 (逆回転) */
+.minute-hand {
+    width: 4px;
+    height: 105px;
+    background-color: #666;
+    z-index: 2;
+}
+
+/* 秒針 (逆回転) */
+.second-hand {
+    width: 2px;
+    height: 120px;
+    background-color: red;
+    z-index: 1;
+}
+
+/* 中心点 */
+.center-dot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 12px;
+    height: 12px;
+    background-color: #333;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 4;
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 300px;
+}
+
+#hour-input {
+    width: 100%;
+    margin-top: 10px;
+}
+
+#current-hour {
+    margin-top: 5px;
+    font-size: 1.1em;
+    font-weight: bold;
+}

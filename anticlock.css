@@ -1,0 +1,162 @@
+/* 全体の設定 */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #fff; /* 背景白 */
+    overflow: hidden; /* スクロール禁止 */
+    font-family: sans-serif;
+}
+
+/* 時計のコンテナ */
+.clock-container {
+    width: 90vmin;
+    height: 90vmin;
+    position: relative;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none; /* タッチ操作の干渉を防ぐ */
+    z-index: 1;
+}
+
+/* 文字盤画像 */
+.dial-image {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    object-fit: contain;
+    z-index: 5;
+}
+
+/* 針の共通スタイル */
+.hand {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    /* 画像の中心を回転軸にする */
+    transform-origin: 50% 50%;
+    /* 初期位置を中央に合わせる */
+    transform: translate(-50%, -50%);
+    transition: transform 0.05s linear; /* なめらかな動き */
+    object-fit: contain;
+    pointer-events: none; /* 基本的にクリックを透過させる */
+}
+
+/* --- 各針のサイズと重なり順 (z-index) --- */
+
+/* 長針 (Minute) */
+.minute-hand {
+    width: 45vmin;  /* 大きめに設定 */
+    height: 45vmin;
+    z-index: 20;
+}
+
+/* 秒針 (Second) */
+.second-hand {
+    width: 50vmin;  /* 大きめに設定 */
+    height: 50vmin;
+    z-index: 30;
+}
+
+/* 短針 (Hour) - 操作可能にするため最前面へ */
+.hour-hand {
+    width: 35vmin;  /* 大きめに設定 */
+    height: 35vmin;
+    z-index: 40;    /* 他の針より手前に */
+    cursor: grab;
+    pointer-events: auto; /* 短針だけは操作を受け付ける */
+}
+
+.hour-hand:active {
+    cursor: grabbing;
+}
+
+/* 中心点 */
+.center-dot {
+    width: 3vmin;
+    height: 3vmin;
+    background-color: #000;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 50; /* 接合部を隠すため一番上 */
+    pointer-events: none;
+}
+
+/* --- 隠しトリガーエリア (右上) --- */
+#secret-trigger {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100px;  /* タップしやすい広さ */
+    height: 100px;
+    z-index: 200;  /* 最前面 */
+    background-color: transparent; /* 透明 */
+    /* background-color: rgba(255,0,0,0.2); ← デバッグ時はコメント外して赤くする */
+}
+
+/* --- コントロールパネル --- */
+.controls {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 15px 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    
+    /* 初期状態は隠す */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+/* パネルが表示された時のクラス */
+.controls.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.controls input {
+    width: 50px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 16px;
+    background: #f9f9f9;
+}
+
+.controls button {
+    width: 100%;
+    padding: 8px 15px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.controls button:active {
+    transform: scale(0.98);
+}

@@ -1,0 +1,69 @@
+document.addEventListener('DOMContentLoaded', function() {
+    const secondHand = document.querySelector('.second-hand');
+    const minuteHand = document.querySelector('.minute-hand');
+    const hourHand = document.querySelector('.hour-hand');
+    const hourInput = document.getElementById('hour-input');
+    const currentHourDisplay = document.getElementById('current-hour');
+
+    // 短針（時間）の位置を計算する関数
+    function calculateHourRotation(currentHourValue) {
+        // 短針は360度 / 12時間 = 30度/時。
+        // currentHourValue は 1〜12 の値（例: 3.5は3時半）。
+        // 角度 = (currentHourValue / 12) * 360
+        // または 角度 = currentHourValue * 30
+        const hourDegrees = (currentHourValue % 12) * 30;
+
+        // 短針は通常通り順回転
+        return `rotate(${hourDegrees}deg)`;
+    }
+
+    // 短針の位置を設定するイベントリスナー
+    hourInput.addEventListener('input', function() {
+        const hourValue = parseFloat(this.value);
+        hourHand.style.transform = calculateHourRotation(hourValue);
+        
+        // 表示を更新
+        const hours = Math.floor(hourValue);
+        // 小数部分を分に変換 (0.1刻みなので 0.1 * 60 = 6分刻み)
+        const minutes = Math.round((hourValue - hours) * 60); 
+        const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+        currentHourDisplay.textContent = `${hours}:${formattedMinutes}`;
+    });
+
+    // 短針の初期位置を設定
+    hourHand.style.transform = calculateHourRotation(parseFloat(hourInput.value));
+    
+    // 現在の時分を初期表示
+    const initialHourValue = parseFloat(hourInput.value);
+    const initialHours = Math.floor(initialHourValue);
+    const initialMinutes = Math.round((initialHourValue - initialHours) * 60); 
+    const initialFormattedMinutes = initialMinutes < 10 ? '0' + initialMinutes : initialMinutes;
+    currentHourDisplay.textContent = `${initialHours}:${initialFormattedMinutes}`;
+
+
+    // 時計を更新する関数
+    function setDate() {
+        const now = new Date();
+
+        // リアルタイムの秒と分を取得
+        const seconds = now.getSeconds();
+        const minutes = now.getMinutes();
+        
+        // 長針（分）: 360度 / 60分 = 6度/分。
+        // 逆回転なので、角度はマイナスに。
+        // 角度 = -((minutes * 6) + (seconds / 60) * 6)
+        const minuteDegrees = -(minutes * 6 + seconds / 10); // 分の角度に秒の進行分も加味
+        minuteHand.style.transform = `rotate(${minuteDegrees}deg)`;
+
+        // 秒針: 360度 / 60秒 = 6度/秒。
+        // 逆回転なので、角度はマイナスに。
+        const secondDegrees = -(seconds * 6);
+        secondHand.style.transform = `rotate(${secondDegrees}deg)`;
+    }
+
+    // 1秒ごとにsetDate関数を呼び出す
+    setInterval(setDate, 1000);
+
+    // ページ読み込み時に一度実行して初期表示
+    setDate();
+});
