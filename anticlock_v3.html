@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>逆回転アナログ時計</title>
+    <link rel="stylesheet" href="anticlock_v3.css">
+</head>
+<body>
+    <div id="top-left-trigger"></div>
+
+    <div id="secret-trigger"></div>
+
+    <div class="clock-container">
+        <img src="無題47_20251119170141.png" alt="Clock Dial" class="dial-image">
+        <img src="hour2.png" alt="Minute Hand" class="hand minute-hand" id="minute-hand">
+        <img src="hour3.png" alt="Second Hand" class="hand second-hand" id="second-hand">
+        <img src="hour.png" alt="Hour Hand" class="hand hour-hand" id="hour-hand">
+    </div>
+
+    <div class="controls" id="control-panel">
+        <div class="panel-title">経過時間</div>
+        
+        <div id="time-display" class="time-display">00:00</div>
+        
+        <div class="adjust-group">
+            <button id="minus-1m-btn">－1分</button>
+            <button id="plus-1m-btn">＋1分</button>
+        </div>
+
+        <div class="adjust-group">
+            <button id="minus-5m-btn">－5分</button>
+            <button id="plus-5m-btn">＋5分</button>
+        </div>
+        
+        <div class="btn-group">
+            <button id="sync-hour-btn" class="sync-btn">短針を合わせる</button>
+        </div>
+        
+        <div class="btn-group">
+            <button id="reset-btn" class="reset">1:00 にリセット</button>
+        </div>
+    </div>
+
+    <script src="anticlock_v3.js"></script>
+</body>
+</html>
