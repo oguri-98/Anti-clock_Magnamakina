@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>逆回転アナログ時計</title>
+    <link rel="stylesheet" href="anticlock_v1.css">
+</head>
+<body>
+    <div class="clock-container">
+        <img src="無題47_20251119170141.png" alt="Clock Dial" class="dial-image">
+        
+        <img src="hour2.png" alt="Minute Hand" class="hand minute-hand" id="minute-hand">
+        <img src="hour3.png" alt="Second Hand" class="hand second-hand" id="second-hand">
+        <img src="hour.png" alt="Hour Hand" class="hand hour-hand" id="hour-hand">
+        
+        <div class="center-dot"></div>
+    </div>
+
+    <div id="secret-trigger"></div>
+
+    <div class="controls" id="control-panel">
+        <div class="input-group">
+            <input type="number" id="input-h" placeholder="時" min="0" max="11" value="10">
+            <span>:</span>
+            <input type="number" id="input-m" placeholder="分" min="0" max="59" value="10">
+            <span>:</span>
+            <input type="number" id="input-s" placeholder="秒" min="0" max="59" value="0">
+        </div>
+        <button id="set-time-btn">時間を設定</button>
+    </div>
+
+    <script src="anticlock_v1.js"></script>
+</body>
+</html>
