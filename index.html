@@ -12,9 +12,9 @@ function TAnalogClock(clockCanvas){
   this.draw=function(){
     //現在時分秒の取得
     let nowTime=new Date();
-    let hour=nowTime.getHours();
-    let minute=nowTime.getMinutes();
-    let second=nowTime.getSeconds()+nowTime.getMilliseconds()/1000;
+    let hour=-nowTime.getHours();
+    let minute=-nowTime.getMinutes();
+    let second=-nowTime.getSeconds()-nowTime.getMilliseconds()/1000;
     //キャンバスのクリア
     this.ctx.clearRect(0,0,this.size,this.size);
     let r=this.size/2;
