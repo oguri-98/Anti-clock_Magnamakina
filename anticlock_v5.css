@@ -5,7 +5,6 @@ body {
     align-items: center;
     min-height: 100vh;
     margin: 0;
-    /* 背景色をデフォルトで白に */
     background-color: #fff;
     overflow: hidden;
     font-family: sans-serif;
@@ -42,7 +41,6 @@ body {
     transform: translate(-50%, -50%);
     transition: transform 0.05s linear;
     object-fit: contain;
-    /* 針はドラッグターゲットにしない (hour-handはJSで上書き) */
     pointer-events: none;
 }
 
@@ -61,7 +59,7 @@ body {
     width: 80vmin;
     height: 80vmin;
     z-index: 40; 
-    pointer-events: auto; /* 短針はドラッグ可能にする */
+    pointer-events: auto;
     cursor: grab;
 }
 .hour-hand:active { cursor: grabbing; }
@@ -95,14 +93,14 @@ body {
 .controls {
     position: fixed;
     
-    /* v4 デザイン要素 */
+    /* デザイン */
     background-color: rgba(255, 255, 255, 0.95);
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 5px 20px rgba(0,0,0,0.15);
     border: none;
     
-    /* v5 機能要素 */
+    /* 非表示設定 */
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -111,28 +109,28 @@ body {
     flex-direction: column;
     gap: 10px;
     width: 200px;
-
-    /* ▼▼▼ 追加：非表示時はクリックを透過させる (パネルが重なった場合の対策) ▼▼▼ */
+    
+    /* クリック透過 (非表示のパネルが重なった場合の対策) */
     pointer-events: none; 
 }
 
-/* ▼▼▼ 修正：時間調整パネル (#control-panel, 元：右上) を中央下部に移動 ▼▼▼ */
+/* ▼▼▼ 修正：時間調整パネルの位置 (中央下部) ▼▼▼ */
 #control-panel {
     top: auto; 
-    right: auto;
     bottom: 20px; 
     left: 50%; 
     transform: translateX(-50%);
+    right: auto;
     z-index: 100; 
 }
 
-/* ▼▼▼ 修正：画像切替パネル (.image-controls, 元：右下) を中央下部に移動 ▼▼▼ */
+/* ▼▼▼ 修正：画像切替パネルの位置 (中央下部) ▼▼▼ */
 .image-controls {
     top: auto; 
-    right: auto;
     bottom: 20px; 
     left: 50%; 
     transform: translateX(-50%); 
+    right: auto; 
     z-index: 90; 
 }
 
@@ -141,8 +139,6 @@ body {
 .controls.visible {
     opacity: 1;
     visibility: visible;
-    
-    /* ▼▼▼ 修正：表示時はクリックを受け付ける ▼▼▼ */
     pointer-events: auto; 
 }
 
@@ -168,10 +164,11 @@ body {
     text-align: center;
 }
 
-/* ボタンのグループ */
+/* ▼▼▼ 修正：ボタンのグループ (単独ボタンを中央に配置するため) ▼▼▼ */
 .btn-group, .adjust-group {
     display: flex;
     gap: 10px;
+    justify-content: center; /* 中央揃えを追加 */
 }
 
 .adjust-group button {
@@ -265,9 +262,10 @@ body.white-screen {
     overflow: hidden; 
 }
 
-/* 白画面時は、時計本体、画像、左上トリガーを非表示にする */
+/* 白画面時は、時計本体、画像、左上トリガー、時間パネルを非表示にする */
 body.white-screen .clock-container,
 body.white-screen .image-display-container,
-body.white-screen #top-left-trigger {
+body.white-screen #top-left-trigger,
+body.white-screen #control-panel {
     display: none !important; 
 }
