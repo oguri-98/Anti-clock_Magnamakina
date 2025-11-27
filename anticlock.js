@@ -12,10 +12,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const minus5mBtn = document.getElementById('minus-5m-btn');
     const syncHourBtn = document.getElementById('sync-hour-btn');
     
-    const secretTrigger = document.getElementById('secret-trigger');
+    const secretTrigger = document.getElementById('secret-trigger'); // 右上トリガー
     const topLeftTrigger = document.getElementById('top-left-trigger');
-    const controlPanel = document.getElementById('control-panel');
+    const controlPanel = document.getElementById('control-panel'); // 時間調整パネル
     const timeDisplay = document.getElementById('time-display');
+
+    const imageControlPanel = document.getElementById('image-control-panel'); // 画像切替パネル
+    const imageSelectButtons = imageControlPanel ? imageControlPanel.querySelectorAll('.image-select-group button') : [];
+    const displayImage = document.getElementById('display-image');
+    
+    const body = document.body;
+    const bottomRightTrigger = document.getElementById('bottom-right-trigger'); // 右下トリガー
 
     // --- 初期設定 ---
     const DEFAULT_TIME = { h: 1, m: 0, s: 0 };
@@ -23,13 +30,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let secondAngle = 0;
     let minuteAngle = 0;
     let hourAngle = 0;
-    
-    // アニメーション停止フラグは使いませんが、リセット時のために変数は残しておきます
     let isPaused = false;
-    
     let isDragging = false;
     let lastTime = performance.now();
-    
     const CENTRAL_TRANSFORM = 'translate(-50%, -50%)';
 
     // --- 時間セット関数 ---
@@ -68,7 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const deltaTime = (currentTime - lastTime) / 1000;
         lastTime = currentTime;
 
-        // 停止中でなければ時間を進める
         if (!isPaused) {
             // 逆回転
             secondAngle -= 6 * deltaTime;
@@ -79,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(animate);
     }
 
-    // --- ドラッグ操作 ---
+    // --- ドラッグ操作 (短針) ---
     const startDrag = (e) => {
         e.preventDefault();
         isDragging = true;
@@ -123,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('touchend', endDrag);
 
 
-    // --- 隠しコマンド (右上：パネル表示) ---
+    // --- 隠しコマンド (右上：時間パネル表示) ---
     let tapCountRight = 0;
     let tapTimerRight;
 
@@ -132,6 +134,13 @@ document.addEventListener('DOMContentLoaded', () => {
         tapCountRight++;
         clearTimeout(tapTimerRight);
         if (tapCountRight === 3) {
+            
+            // ▼▼▼ 排他制御：右下パネルを非表示にする (実装済み) ▼▼▼
+            if (imageControlPanel.classList.contains('visible')) {
+                imageControlPanel.classList.remove('visible');
+            }
+            
+            // 時間調整パネルの表示/非表示を切り替える
             controlPanel.classList.toggle('visible');
             tapCountRight = 0;
         } else {
@@ -142,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
     secretTrigger.addEventListener('click', handleRightTap);
 
 
-    // --- ▼▼▼ 修正箇所：隠しコマンド (左上：58分へジャンプ＆継続) ▼▼▼ ---
+    // --- 隠しコマンド (左上：58分へジャンプ＆継続) ---
     let tapCountLeft = 0;
     let tapTimerLeft;
 
@@ -152,21 +161,10 @@ document.addEventListener('DOMContentLoaded', () => {
         clearTimeout(tapTimerLeft);
         
         if (tapCountLeft === 3) {
-            // 3回タップ時の処理
-            
-            // 1. 停止させない (もし停止中なら再開させる)
             isPaused = false;
-            
-            // 2. 経過時間を 58分00秒 にセット
-            // 1分 = -6度 なので、58分 = 58 * -6 = -348度
             minuteAngle = -348;
             secondAngle = 0;
-            
-            // 3. 短針も同期
-            // 初期位置(30度) + (minuteAngle / 12)
             hourAngle = 30 + (minuteAngle / 12);
-            
-            // 4. 即座に反映 (その後animateループで動き続ける)
             updateHands();
             
             tapCountLeft = 0;
@@ -178,7 +176,36 @@ document.addEventListener('DOMContentLoaded', () => {
     topLeftTrigger.addEventListener('click', handleLeftTap);
 
 
-    // --- ボタン操作 ---
+    // --- 隠しコマンド (右下：画像パネル表示) ---
+    let tapCountBottomRight = 0;
+    let tapTimerBottomRight;
+
+    const handleBottomRightTap = (e) => {
+        e.preventDefault();
+        tapCountBottomRight++;
+        clearTimeout(tapTimerBottomRight);
+        if (tapCountBottomRight === 3) {
+            
+            // ▼▼▼ 排他制御：右上パネルを非表示にする (実装済み) ▼▼▼
+            if (controlPanel.classList.contains('visible')) {
+                controlPanel.classList.remove('visible');
+            }
+            
+            // 画像切替パネルの表示/非表示を切り替える
+            imageControlPanel.classList.toggle('visible');
+            tapCountBottomRight = 0;
+        } else {
+            tapTimerBottomRight = setTimeout(() => { tapCountBottomRight = 0; }, 400);
+        }
+    };
+    
+    if (bottomRightTrigger) {
+        bottomRightTrigger.addEventListener('touchstart', handleBottomRightTap, { passive: false });
+        bottomRightTrigger.addEventListener('click', handleBottomRightTap);
+    }
+
+
+    // --- ボタン操作 (時間調整) ---
     
     resetBtn.addEventListener('click', () => {
         isPaused = false;
@@ -215,7 +242,36 @@ document.addEventListener('DOMContentLoaded', () => {
         updateHands();
     });
 
+    // --- 画像切り替え処理 ---
+    imageSelectButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            const imageName = e.currentTarget.getAttribute('data-image');
+            
+            // まずはbodyのwhite-screenクラスを解除
+            body.classList.remove('white-screen');
+
+            if (imageName === 'clock') {
+                // 「時計」を選択した場合: 画像を非表示にし、時計を表示
+                displayImage.classList.add('hidden-image');
+                displayImage.src = ""; 
+                
+            } else if (imageName === 'white.png') {
+                // 「白」を選択した場合: bodyにwhite-screenクラスを付与
+                body.classList.add('white-screen');
+                displayImage.classList.add('hidden-image'); 
+                displayImage.src = "";
+            }
+            else {
+                // その他の画像を選択した場合: 画像を表示し、時計の上に重ねる
+                displayImage.src = imageName;
+                displayImage.classList.remove('hidden-image');
+            }
+        });
+    });
+
     // --- 開始 ---
+    displayImage.classList.add('hidden-image');
+    body.classList.remove('white-screen');
     setTime(DEFAULT_TIME.h, DEFAULT_TIME.m, DEFAULT_TIME.s);
     requestAnimationFrame(animate);
 });

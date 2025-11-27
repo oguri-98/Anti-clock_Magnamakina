@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>逆回転アナログ時計</title>
     <link rel="stylesheet" href="anticlock.css">
-    <meta name="robots" content="noindex, nofollow">
 </head>
 <body>
     <div id="top-left-trigger"></div>
 
     <div id="secret-trigger"></div>
+    
+    <div class="image-display-container">
+        <img id="display-image" src="" alt="Display Image" class="hidden-image">
+    </div>
 
     <div class="clock-container">
         <img src="無題47_20251119170141.png" alt="Clock Dial" class="dial-image">
@@ -42,7 +45,19 @@
             <button id="reset-btn" class="reset">1:00 にリセット</button>
         </div>
     </div>
-
+    
+    <div class="controls image-controls" id="image-control-panel">
+        <div class="panel-title">画面切替</div>
+        <div class="btn-group image-select-group">
+            <button data-image="clock">時計</button>
+            <button data-image="cupid.png">キューピッド</button>
+            <button data-image="lock.png">南京錠</button>
+            <button data-image="person.png">人の形</button>
+            <button data-image="white.png">白</button>
+        </div>
+    </div>
+    
+    <div id="bottom-right-trigger"></div> 
     <script src="anticlock.js"></script>
 </body>
 </html>

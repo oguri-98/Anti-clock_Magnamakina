@@ -45,142 +45,227 @@ body {
 }
 
 /* 各針のサイズ */
-.minute-hand { width: 100vmin; height: 100vmin; z-index: 20; }
-.second-hand { width: 100vmin; height: 100vmin; z-index: 30; }
-
-/* 短針 (操作可能) */
-.hour-hand {
+.minute-hand { 
+    width: 100vmin;
+    height: 100vmin;
+    z-index: 20; 
+}
+.second-hand { 
+    width: 100vmin;
+    height: 100vmin;
+    z-index: 30; 
+}
+.hour-hand { 
     width: 80vmin;
     height: 80vmin;
-    z-index: 40;
-    cursor: grab;
+    z-index: 40; 
     pointer-events: auto;
+    cursor: grab;
 }
 .hour-hand:active { cursor: grabbing; }
 
-/* 中心点のスタイル(.center-dot)は削除しました */
 
-/* 隠しトリガー */
-#secret-trigger {
+/* 隠しコマンドのトリガー領域 */
+#top-left-trigger, #secret-trigger, #bottom-right-trigger {
     position: fixed;
-    top: 0;
-    right: 0;
-    width: 120px;
-    height: 120px;
-    z-index: 9999;
-    background-color: transparent;
-    cursor: pointer;
+    width: 15%; 
+    height: 15%;
+    z-index: 80; 
 }
 
-/* --- コントロールパネル --- */
+#top-left-trigger {
+    top: 0;
+    left: 0;
+}
+
+#secret-trigger {
+    top: 0;
+    right: 0;
+}
+
+#bottom-right-trigger {
+    bottom: 0;
+    right: 0;
+}
+
+
+/* --- コントロールパネルの共通スタイルと非表示設定 --- */
 .controls {
     position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
+    
+    /* デザイン */
     background-color: rgba(255, 255, 255, 0.95);
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-    z-index: 100;
+    border: none;
+    
+    /* 非表示設定 */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: 10px;
     width: 200px;
     
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
+    /* クリック透過 (非表示のパネルが重なった場合の対策) */
+    pointer-events: none; 
 }
 
+/* ▼▼▼ 修正：時間調整パネルの位置 (中央下部) ▼▼▼ */
+#control-panel {
+    top: auto; 
+    bottom: 20px; 
+    left: 50%; 
+    transform: translateX(-50%);
+    right: auto;
+    z-index: 100; 
+}
+
+/* ▼▼▼ 修正：画像切替パネルの位置 (中央下部) ▼▼▼ */
+.image-controls {
+    top: auto; 
+    bottom: 20px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    right: auto; 
+    z-index: 90; 
+}
+
+
+/* 表示時に使うクラス */
 .controls.visible {
     opacity: 1;
-    pointer-events: auto;
+    visibility: visible;
+    pointer-events: auto; 
 }
 
-.panel-title { font-size: 14px; font-weight: bold; color: #666; margin-bottom: 5px; }
-.adjust-group, .btn-group { display: flex; gap: 10px; width: 100%; }
 
-.controls button {
-    flex: 1;
-    padding: 12px;
-    background-color: #333;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
-}
-.controls button:active { transform: scale(0.96); }
-.adjust-group button { background-color: #555; }
-.controls button.reset { background-color: #d9534f; margin-top: 5px; }
+/* --- その他のパネル共通・ボタンのスタイル --- */
 
-/* ... (既存のコードはそのまま) ... */
-
-/* --- コントロールパネル内の修正 --- */
-
+/* パネルのタイトル */
 .panel-title {
     font-size: 14px;
     font-weight: bold;
     color: #666;
-    margin-bottom: 0px; /* 少し詰める */
+    margin-bottom: 0px; 
 }
 
-/* ▼▼▼ 追加：時間表示のスタイル ▼▼▼ */
+/* 経過時間表示 */
 .time-display {
     font-size: 32px;
     font-weight: bold;
     color: #333;
-    font-family: monospace; /* 等幅フォントで数字のブレを防ぐ */
+    font-family: monospace; 
     margin-bottom: 10px;
     letter-spacing: 2px;
+    text-align: center;
 }
 
-/* 他のボタンスタイルなどはそのまま */
-.controls {
-    /* ... */
+/* ▼▼▼ 修正：ボタンのグループ (単独ボタンを中央に配置するため) ▼▼▼ */
+.btn-group, .adjust-group {
+    display: flex;
     gap: 10px;
-    /* ... */
+    justify-content: center; /* 中央揃えを追加 */
 }
-/* ... (これまでのコードはそのまま) ... */
 
-/* --- ボタンの色調整 --- */
+.adjust-group button {
+    flex: 1;
+}
 
-/* リセットボタン (赤系) */
-.controls button.reset {
-    background-color: #d9534f;
+/* ボタンの共通スタイル */
+.controls button {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    transition: transform 0.1s ease, background-color 0.2s ease;
+    background-color: #333;
+}
+.controls button:active { transform: scale(0.96); }
+
+/* 時間調整ボタン */
+.adjust-group button { 
+    background-color: #555; 
+}
+
+/* 短針同期ボタン */
+.controls button.sync-btn { 
+    background-color: #428bca; 
+    margin-top: 5px; 
+}
+
+/* リセットボタン */
+.controls button.reset { 
+    background-color: #d9534f; 
+    margin-top: 5px; 
+}
+
+/* 画像切替ボタンのスタイル */
+.image-select-group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 10px;
     margin-top: 5px;
 }
 
-/* ▼▼▼ 追加：短針同期ボタン (青系) ▼▼▼ */
-.controls button.sync-btn {
+/* 画像切替ボタン */
+.image-select-group button {
+    background-color: #f0ad4e; 
+    padding: 12px 5px;
+    font-size: 14px;
+}
+
+/* 時計ボタン */
+.image-select-group button[data-image="clock"] {
     background-color: #428bca;
-    margin-top: 5px;
 }
 
-/* 隠しトリガー (右上) */
-#secret-trigger {
+
+/* --- 画像表示コンテナ --- */
+.image-display-container {
     position: fixed;
-    top: 0;
-    right: 0;
-    width: 120px;
-    height: 120px;
-    z-index: 9999;
-    background-color: transparent;
-    cursor: pointer;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 50; 
+    pointer-events: none;
 }
 
-/* ▼▼▼ 追加：隠しトリガー (左上) ▼▼▼ */
-#top-left-trigger {
-    position: fixed;
-    top: 0;
-    left: 0; /* 左上に配置 */
-    width: 120px;
-    height: 120px;
-    z-index: 9999;
-    background-color: transparent;
-    cursor: pointer;
-    /* background-color: rgba(0, 0, 255, 0.3); ← デバッグ用(青) */
+/* 表示される画像 */
+#display-image {
+    max-width: 150%;
+    max-height: 150%;
+    object-fit: contain;
+    transition: opacity 0.3s ease;
+}
+
+/* 非表示にするクラス */
+.hidden-image {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* --- 画面真っ白モード --- */
+body.white-screen {
+    background-color: white;
+    overflow: hidden; 
+}
+
+/* 白画面時は、時計本体、画像、左上トリガー、時間パネルを非表示にする */
+body.white-screen .clock-container,
+body.white-screen .image-display-container,
+body.white-screen #top-left-trigger,
+body.white-screen #control-panel {
+    display: none !important; 
 }
