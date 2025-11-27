@@ -12,20 +12,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const minus5mBtn = document.getElementById('minus-5m-btn');
     const syncHourBtn = document.getElementById('sync-hour-btn');
     
-    const secretTrigger = document.getElementById('secret-trigger');
+    const secretTrigger = document.getElementById('secret-trigger'); // 右上トリガー
     const topLeftTrigger = document.getElementById('top-left-trigger');
-    const controlPanel = document.getElementById('control-panel');
+    const controlPanel = document.getElementById('control-panel'); // 時間調整パネル
     const timeDisplay = document.getElementById('time-display');
 
-    // 画像切り替え関連の要素
-    const imageControlPanel = document.getElementById('image-control-panel');
+    const imageControlPanel = document.getElementById('image-control-panel'); // 画像切替パネル
     const imageSelectButtons = imageControlPanel ? imageControlPanel.querySelectorAll('.image-select-group button') : [];
     const displayImage = document.getElementById('display-image');
     
-    // ▼▼▼ 追加：body要素と右下トリガーを取得 ▼▼▼
     const body = document.body;
-    const bottomRightTrigger = document.getElementById('bottom-right-trigger');
-    // ▲▲▲ 追加箇所 ▲▲▲
+    const bottomRightTrigger = document.getElementById('bottom-right-trigger'); // 右下トリガー
 
     // --- 初期設定 ---
     const DEFAULT_TIME = { h: 1, m: 0, s: 0 };
@@ -33,12 +30,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let secondAngle = 0;
     let minuteAngle = 0;
     let hourAngle = 0;
-    
     let isPaused = false;
-    
     let isDragging = false;
     let lastTime = performance.now();
-    
     const CENTRAL_TRANSFORM = 'translate(-50%, -50%)';
 
     // --- 時間セット関数 ---
@@ -77,7 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const deltaTime = (currentTime - lastTime) / 1000;
         lastTime = currentTime;
 
-        // 停止中でなければ時間を進める
         if (!isPaused) {
             // 逆回転
             secondAngle -= 6 * deltaTime;
@@ -88,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(animate);
     }
 
-    // --- ドラッグ操作 ---
+    // --- ドラッグ操作 (短針) ---
     const startDrag = (e) => {
         e.preventDefault();
         isDragging = true;
@@ -141,6 +134,13 @@ document.addEventListener('DOMContentLoaded', () => {
         tapCountRight++;
         clearTimeout(tapTimerRight);
         if (tapCountRight === 3) {
+            
+            // ▼▼▼ 排他制御：右下パネルを非表示にする (実装済み) ▼▼▼
+            if (imageControlPanel.classList.contains('visible')) {
+                imageControlPanel.classList.remove('visible');
+            }
+            
+            // 時間調整パネルの表示/非表示を切り替える
             controlPanel.classList.toggle('visible');
             tapCountRight = 0;
         } else {
@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
     topLeftTrigger.addEventListener('click', handleLeftTap);
 
 
-    // ▼▼▼ 新規追加：隠しコマンド (右下：画像パネル表示) ▼▼▼
+    // --- 隠しコマンド (右下：画像パネル表示) ---
     let tapCountBottomRight = 0;
     let tapTimerBottomRight;
 
@@ -185,7 +185,13 @@ document.addEventListener('DOMContentLoaded', () => {
         tapCountBottomRight++;
         clearTimeout(tapTimerBottomRight);
         if (tapCountBottomRight === 3) {
-            // image-control-panel の表示/非表示を切り替える
+            
+            // ▼▼▼ 排他制御：右上パネルを非表示にする (実装済み) ▼▼▼
+            if (controlPanel.classList.contains('visible')) {
+                controlPanel.classList.remove('visible');
+            }
+            
+            // 画像切替パネルの表示/非表示を切り替える
             imageControlPanel.classList.toggle('visible');
             tapCountBottomRight = 0;
         } else {
@@ -197,7 +203,6 @@ document.addEventListener('DOMContentLoaded', () => {
         bottomRightTrigger.addEventListener('touchstart', handleBottomRightTap, { passive: false });
         bottomRightTrigger.addEventListener('click', handleBottomRightTap);
     }
-    // ▲▲▲ 新規追加 ▲▲▲
 
 
     // --- ボタン操作 (時間調整) ---
