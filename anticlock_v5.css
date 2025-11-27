@@ -1,0 +1,266 @@
+/* 全体の設定 */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    /* 背景色をデフォルトで白に */
+    background-color: #fff;
+    overflow: hidden;
+    font-family: sans-serif;
+}
+
+/* 時計のコンテナ */
+.clock-container {
+    width: 90vmin;
+    height: 90vmin;
+    position: relative;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+    z-index: 1;
+}
+
+/* 文字盤 */
+.dial-image {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    object-fit: contain;
+    z-index: 5;
+}
+
+/* 針の共通スタイル */
+.hand {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform-origin: 50% 50%;
+    transform: translate(-50%, -50%);
+    transition: transform 0.05s linear;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+/* 各針のサイズ */
+.minute-hand { 
+    width: 100vmin;
+    height: 100vmin;
+    z-index: 20; 
+}
+.second-hand { 
+    width: 100vmin;
+    height: 100vmin;
+    z-index: 30; 
+}
+/* 短針 (v4の幅、v5のz-index/操作設定) */
+.hour-hand { 
+    width: 80vmin;
+    height: 80vmin;
+    z-index: 40; 
+    pointer-events: auto;
+    cursor: grab;
+}
+.hour-hand:active { cursor: grabbing; }
+
+
+/* 隠しコマンドのトリガー領域 (v5の応答的なサイズと位置) */
+#top-left-trigger, #secret-trigger, #bottom-right-trigger {
+    position: fixed;
+    width: 15%; 
+    height: 15%;
+    z-index: 80; 
+}
+
+#top-left-trigger {
+    top: 0;
+    left: 0;
+}
+
+#secret-trigger {
+    top: 0;
+    right: 0;
+}
+
+#bottom-right-trigger {
+    bottom: 0;
+    right: 0;
+}
+
+
+/* --- コントロールパネルの共通スタイルと非表示設定 --- */
+.controls {
+    position: fixed;
+    
+    /* ▼ v4 デザイン要素 ▼ */
+    background-color: rgba(255, 255, 255, 0.95); /* v4背景色 */
+    padding: 20px; /* v4パディング */
+    border-radius: 15px; /* v4角丸 */
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15); /* v4影 */
+    border: none; /* v4はborderなし */
+    
+    /* ▼ v5 機能要素 ▼ */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 200px;
+}
+
+/* 右上の時間調整パネルの位置とZ-index */
+#control-panel {
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+}
+
+/* 右下の画像切替パネルの位置とZ-index */
+.image-controls {
+    top: auto; 
+    bottom: 20px; 
+    right: 20px; 
+    z-index: 90; 
+    transform: none; 
+}
+
+/* 表示時に使うクラス (右上・右下共通) */
+.controls.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+/* --- その他のパネル共通・ボタンのスタイル --- */
+
+/* パネルのタイトル */
+.panel-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: #666;
+    margin-bottom: 0px; 
+}
+
+/* 経過時間表示 */
+.time-display {
+    font-size: 32px;
+    font-weight: bold;
+    color: #333;
+    font-family: monospace; 
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+    text-align: center;
+}
+
+/* ボタンのグループ */
+.btn-group, .adjust-group {
+    display: flex;
+    gap: 10px;
+}
+
+.adjust-group button {
+    flex: 1;
+}
+
+/* ボタンの共通スタイル (v4デザイン) */
+.controls button {
+    padding: 12px; /* v4パディング */
+    border: none;
+    border-radius: 8px; /* v4角丸 */
+    cursor: pointer;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    transition: transform 0.1s ease, background-color 0.2s ease;
+    background-color: #333; /* v4共通ボタン色 */
+}
+.controls button:active { transform: scale(0.96); }
+
+/* 時間調整ボタン (v4デザイン) */
+.adjust-group button { 
+    background-color: #555; 
+}
+
+/* 短針同期ボタン (v4デザイン) */
+.controls button.sync-btn { 
+    background-color: #428bca; 
+    margin-top: 5px; 
+}
+
+/* リセットボタン (v4デザイン) */
+.controls button.reset { 
+    background-color: #d9534f; 
+    margin-top: 5px; 
+}
+
+/* 画像切替ボタンのスタイル */
+.image-select-group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 10px;
+    margin-top: 5px;
+}
+
+/* 画像切替ボタン (v5色) */
+.image-select-group button {
+    background-color: #f0ad4e; 
+    padding: 12px 5px;
+    font-size: 14px;
+}
+
+/* 時計ボタン (v5色) */
+.image-select-group button[data-image="clock"] {
+    background-color: #428bca;
+}
+
+
+/* --- 画像表示コンテナ --- */
+.image-display-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 50; 
+    pointer-events: none;
+}
+
+/* 表示される画像 */
+#display-image {
+    /* v4のサイズを使用 */
+    max-width: 150%;
+    max-height: 150%;
+    object-fit: contain;
+    transition: opacity 0.3s ease;
+}
+
+/* 非表示にするクラス */
+.hidden-image {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* --- 画面真っ白モード (v5の修正ロジック) --- */
+body.white-screen {
+    background-color: white;
+    overflow: hidden; 
+}
+
+/* 白画面時は、時計本体、画像、左上トリガー、右上の時間パネルを非表示にする */
+body.white-screen .clock-container,
+body.white-screen .image-display-container,
+body.white-screen #top-left-trigger,
+body.white-screen #control-panel {
+    display: none !important; 
+}
+/* 右下画像パネル (.image-controls) は非表示リストから除外され、
+   表示されていれば白画面でもそのまま表示されます。 */
