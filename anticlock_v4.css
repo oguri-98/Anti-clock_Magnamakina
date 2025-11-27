@@ -222,11 +222,6 @@ body {
     margin-top: 5px;
 }
 
-/* 白ボタンを独立させるための調整 */
-.image-select-group button[data-image="white.png"] {
-    grid-column: span 3; /* 3列いっぱいに広げる */
-}
-
 /* 画像切替ボタンの色を調整 */
 .image-select-group button {
     background-color: #f0ad4e; /* オレンジ系 */
