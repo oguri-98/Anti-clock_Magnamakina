@@ -1,0 +1,249 @@
+/* 全体の設定 */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #fff;
+    overflow: hidden;
+    font-family: sans-serif;
+}
+
+/* 時計のコンテナ */
+.clock-container {
+    width: 90vmin;
+    height: 90vmin;
+    position: relative;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+    z-index: 1;
+}
+
+/* 文字盤 */
+.dial-image {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    object-fit: contain;
+    z-index: 5;
+}
+
+/* 針の共通スタイル */
+.hand {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform-origin: 50% 50%;
+    transform: translate(-50%, -50%);
+    transition: transform 0.05s linear;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+/* 各針のサイズ */
+.minute-hand { width: 100vmin; height: 100vmin; z-index: 20; }
+.second-hand { width: 100vmin; height: 100vmin; z-index: 30; }
+
+/* 短針 (操作可能) */
+.hour-hand {
+    width: 80vmin;
+    height: 80vmin;
+    z-index: 40;
+    cursor: grab;
+    pointer-events: auto;
+}
+.hour-hand:active { cursor: grabbing; }
+
+/* 中心点のスタイル(.center-dot)は削除しました */
+
+/* 隠しトリガー */
+#secret-trigger {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 120px;
+    height: 120px;
+    z-index: 9999;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+/* --- コントロールパネル --- */
+.controls {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 200px;
+    
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.controls.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.panel-title { font-size: 14px; font-weight: bold; color: #666; margin-bottom: 5px; }
+.adjust-group, .btn-group { display: flex; gap: 10px; width: 100%; }
+
+.controls button {
+    flex: 1;
+    padding: 12px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+}
+.controls button:active { transform: scale(0.96); }
+.adjust-group button { background-color: #555; }
+.controls button.reset { background-color: #d9534f; margin-top: 5px; }
+
+/* ... (既存のコードはそのまま) ... */
+
+/* --- コントロールパネル内の修正 --- */
+
+.panel-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: #666;
+    margin-bottom: 0px; /* 少し詰める */
+}
+
+/* ▼▼▼ 追加：時間表示のスタイル ▼▼▼ */
+.time-display {
+    font-size: 32px;
+    font-weight: bold;
+    color: #333;
+    font-family: monospace; /* 等幅フォントで数字のブレを防ぐ */
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+}
+
+/* 他のボタンスタイルなどはそのまま */
+.controls {
+    /* ... */
+    gap: 10px;
+    /* ... */
+}
+/* ... (これまでのコードはそのまま) ... */
+
+/* --- ボタンの色調整 --- */
+
+/* リセットボタン (赤系) */
+.controls button.reset {
+    background-color: #d9534f;
+    margin-top: 5px;
+}
+
+/* ▼▼▼ 追加：短針同期ボタン (青系) ▼▼▼ */
+.controls button.sync-btn {
+    background-color: #428bca;
+    margin-top: 5px;
+}
+
+/* 隠しトリガー (右上) */
+#secret-trigger {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 120px;
+    height: 120px;
+    z-index: 9999;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+/* ▼▼▼ 追加：隠しトリガー (左上) ▼▼▼ */
+#top-left-trigger {
+    position: fixed;
+    top: 0;
+    left: 0; /* 左上に配置 */
+    width: 120px;
+    height: 120px;
+    z-index: 9999;
+    background-color: transparent;
+    cursor: pointer;
+    /* background-color: rgba(0, 0, 255, 0.3); ← デバッグ用(青) */
+}
+
+/* ▼▼▼ 追加：画像表示コンテナ ▼▼▼ */
+.image-display-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 50; /* 時計の針 (z-index: 40) より上に設定 */
+    pointer-events: none; /* 下の時計を操作できるようにする */
+}
+
+/* 表示される画像 */
+#display-image {
+    max-width: 130%;
+    max-height: 130%;
+    object-fit: contain;
+    transition: opacity 0.3s ease;
+}
+
+/* 非表示にするクラス */
+.hidden-image {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* --- コントロールパネルの画像切替ボタンのスタイル --- */
+.image-select-group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3列に配置 */
+    gap: 10px;
+    margin-top: 5px;
+}
+
+/* 白ボタンを独立させるための調整 */
+.image-select-group button[data-image="white.png"] {
+    grid-column: span 3; /* 3列いっぱいに広げる */
+}
+
+/* 画像切替ボタンの色を調整 */
+.image-select-group button {
+    background-color: #f0ad4e; /* オレンジ系 */
+}
+
+/* 時計ボタンは青系に */
+.image-select-group button[data-image="clock"] {
+    background-color: #428bca;
+}
+
+/* ▼▼▼ 追加：画面を真っ白にするクラス ▼▼▼ */
+body.white-screen {
+    background-color: white;
+    overflow: hidden; /* スクロールバーが表示されないようにする */
+}
+body.white-screen .clock-container,
+body.white-screen .image-display-container,
+body.white-screen #top-left-trigger{
+    display: none !important; /* 時計、画像コンテナ、トリガーを完全に非表示 */
+}
