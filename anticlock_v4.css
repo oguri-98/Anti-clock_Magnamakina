@@ -202,8 +202,8 @@ body {
 
 /* 表示される画像 */
 #display-image {
-    max-width: 130%;
-    max-height: 130%;
+    max-width: 150%;
+    max-height: 150%;
     object-fit: contain;
     transition: opacity 0.3s ease;
 }
